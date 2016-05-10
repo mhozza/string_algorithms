@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-
 from string_algorithms.trie import Trie, TrieNode
 
 

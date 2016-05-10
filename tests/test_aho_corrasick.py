@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-
-from string_algorithms.aho_corrasick import preprocess, find
+from string_algorithms.aho_corrasick import find, preprocess
 from string_algorithms.naive_find import find as naive_find
 
 

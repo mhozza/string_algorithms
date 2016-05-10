@@ -6,7 +6,6 @@ from string_algorithms.kmp import find, preprocess
 from string_algorithms.naive_find import find as naive_find
 
 
-
 class TestKMPPreprocess(unittest.TestCase):
     def test_empty(self):
         pattern = ''

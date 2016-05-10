@@ -1,6 +1,6 @@
 from collections import deque
 
-from .trie import TrieNode, Trie
+from .trie import Trie, TrieNode
 
 
 class ACNode(TrieNode):
@@ -17,6 +17,7 @@ def preprocess(patterns):
         pattern_map[t.add(pattern)] = pattern
     q = deque([t.root])
 
+    # BFS through the Trie
     while q:
         parent = q.popleft()
         for c, node in parent.children.items():
