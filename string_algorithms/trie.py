@@ -8,7 +8,7 @@ class TrieNode():
 
     def add(self, char, is_word=False, *args, **kwargs):
         if char not in self.children:
-            self.children[char] = TrieNode(is_word, *args, **kwargs)
+            self.children[char] = self.__class__(is_word, *args, **kwargs)
         return self.children[char]
 
 
@@ -21,6 +21,7 @@ class Trie():
         for c in word:
             node = node.add(c, False, *args, **kwargs)
         node.is_word = True
+        return node
 
     def get_node(self, word):
         node = self.root
