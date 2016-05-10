@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 import ez_setup
 ez_setup.use_setuptools()
 
+from setuptools import setup
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
-
 
 requirements = [
     # TODO: put package requirements here
@@ -17,7 +15,8 @@ requirements = [
 setup(
     name='string_algorithms',
     version='0.1.0',
-    description="Collection of various string algorithms, including KMP, Aho-Corasick, Trie, SuffixArrays",
+    description="Collection of various string algorithms, "
+                "including KMP, Aho-Corasick, Trie, SuffixArrays",
     long_description=readme,
     author="Michal Hozza",
     author_email='mhozza@gmail.com',
@@ -44,5 +43,6 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-    ],    
+    ],
+    test_suite='tests',
 )
