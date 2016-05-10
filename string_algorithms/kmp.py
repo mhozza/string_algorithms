@@ -1,23 +1,25 @@
-def find(pattern, text):
-    # Compute fail function
+def preprocess(pattern):
     p = [0] * len(pattern)
-    j = 0
     for i in range(1, len(pattern)):
+        j = p[i - 1]
         while j > 0 and pattern[i] != pattern[j]:
             j = p[j - 1]
         if pattern[i] == pattern[j]:
-            j += 1
-            p[i] = j
-    # find
+            p[i] = j + 1
+    return p
+
+
+def find(pattern, text):
+    p = preprocess(pattern)
     results = []
     j = 0
-    for i in range(0, len(text)):
-        while j > 0 and text[i] != pattern[j]:
+    for i, c in enumerate(text):
+        while j > 0 and c != pattern[j]:
             j = p[j - 1]
-        if text[i] == pattern[j]:
+        if c == pattern[j]:
             if j == len(pattern) - 1:
                 results.append(i - j)
                 j = p[j - 1]
-            j += 1
-
+            else:
+                j += 1
     return results
