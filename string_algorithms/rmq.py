@@ -18,13 +18,13 @@ class RMQ:
         raise IndexError()
 
     def _max_element_index(self, block):
-        return len(self.array) - self.block_size * block
+        return min(self.block_size, len(self.array) - self.block_size * block)
 
-    def _block_items(self, block):
+    def _block_items(self, block, start=0, end=None):
+        if end is None:
+            end = self._max_element_index(block)
         return (
-            self._block_element(block, i) for i in range(
-                self.block_size
-            ) if i < self._max_element_index(block)
+            self._block_element(block, i) for i in range(start, end)
         )
 
     def _get_block(self, i):
@@ -39,7 +39,7 @@ class RMQ:
     def _process_block_mins(self):
         max_size = floor(log2(len(self.block_mins)))
         res = [[i for _, i in self.block_mins]]
-        for si in range(max_size - 1):
+        for si in range(max_size):
             t = [
                 min(res[si][i], res[si][i + 2**si]) for i in range(len(self.block_mins) - 2**si)
             ] + [
@@ -51,6 +51,7 @@ class RMQ:
 
     def _query_whole_blocks(self, bi, bj):
         cnt = floor(log2(bj - bi))
+        print(bi, bj, bj - 2**cnt, cnt, self.block_cnt)
         return min(
             self.processed_block_mins[cnt][bi],
             self.processed_block_mins[cnt][bj - 2**cnt],
@@ -58,12 +59,16 @@ class RMQ:
 
     def _query_partial_block(self, b, i=0, j=None):
         if j is None:
-            j = self.block_size
+            j = self._max_element_index(b)
+        # @TODO: replace with fast precomputed version
+        return min(self._block_items(b, i, j))
 
     def query(self, i, j):
         bi, pi = self._get_block(i)
         bj, pj = self._get_block(j)
         m = None
+        if bi == bj:
+            return self._query_partial_block(bi, i=pi, j=pj)
         if pi:
             m = self._query_partial_block(bi, i=pi)
             bi += 1
@@ -71,8 +76,8 @@ class RMQ:
             mj = self._query_partial_block(bj, j=pj)
             if m is None or mj < m:
                 m = mj
-            bj -= 1
         if bi < bj:
+            print(i, j, bi, bj)
             mb = self._query_whole_blocks(bi, bj)
             if m is None or mb < m:
                 m = mb

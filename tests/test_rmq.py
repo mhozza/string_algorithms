@@ -40,15 +40,16 @@ class TestRMQ(unittest.TestCase):
                 )
 
     def test_query_aligned(self):
-        test_cnt = 100
+        test_cnt = 1000
         for t in range(test_cnt):
-            sz = randint(1, 5) * self.rmq.block_size
-            i = randint(0, self.rmq.block_cnt - 1) * self.rmq.block_size
-            self.assertEqual(self.rmq.query(i, i+sz), min(self.array[i:i+sz]))
+            b = randint(1, 5)
+            i = randint(0, self.rmq.block_cnt - b -1) * self.rmq.block_size
+            j = i + b * self.rmq.block_size
+            self.assertEqual(self.rmq.query(i, j), min(self.array[i:j]))
 
     def test_query(self):
-        test_cnt = 100
+        test_cnt = 1000
         for t in range(test_cnt):
-            i = randint(0, len(self.array) - 1)
+            i = randint(0, len(self.array) - 2)
             j = randint(i + 1, len(self.array) - 1)
             self.assertEqual(self.rmq.query(i, j), min(self.array[i:j]))
