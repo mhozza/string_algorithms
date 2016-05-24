@@ -1,20 +1,21 @@
-class TrieNode():
+from .data_structures import TreeNode, Tree
+
+
+class TrieNode(TreeNode):
     def __init__(self, is_word=False, *args, **kwargs):
-        self.children = dict()
+        super(TrieNode, self).__init__()
         self.is_word = is_word
 
     def next(self, char):
         return self.children.get(char, None)
 
     def add(self, char, is_word=False, *args, **kwargs):
-        if char not in self.children:
-            self.children[char] = self.__class__(is_word, *args, **kwargs)
-        return self.children[char]
+        return super(TrieNode, self).add(char, is_word)
 
 
-class Trie():
+class Trie(Tree):
     def __init__(self, node_class=TrieNode, *args, **kwargs):
-        self.root = node_class(*args, **kwargs)
+        super(Trie, self).__init__(node_class=node_class, *args, **kwargs)
 
     def add(self, word, *args, **kwargs):
         node = self.root
@@ -35,5 +36,5 @@ class Trie():
         node = self.get_node(word)
         return node is not None and node.is_word
 
-    def is_preffix(self, word):
+    def is_prefix(self, word):
         return self.get_node(word) is not None
