@@ -1,4 +1,4 @@
-from .tree import preorder_traversal
+from .tree import euler_tour
 from .rmq import RMQ
 
 
@@ -8,7 +8,7 @@ class LCA:
         self.euler_tour = []
         self.depths = []
         self.representative = dict()
-        preorder_traversal(self.tree, self.compute_arrays_action)
+        euler_tour(self.tree, self.compute_arrays_action)
         self.compute_representatives()
         self.rmq = RMQ(self.depths)
 
