@@ -16,15 +16,15 @@ class TestTrieNode(unittest.TestCase):
 
     def test_next(self):
         node = TrieNode()
-        self.assertIsNone(node.next('a'))
+        self.assertIsNone(node.get('a'))
         node2 = node.add('a')
-        self.assertIsNotNone(node.next('a'))
-        self.assertDictEqual(node.next('a').children, {})
-        self.assertIsNone(node.next('b'))
+        self.assertIsNotNone(node.get('a'))
+        self.assertDictEqual(node.get('a').children, {})
+        self.assertIsNone(node.get('b'))
         node2.add('b')
-        self.assertIsNotNone(node.next('a').next('b'))
-        self.assertIsNone(node.next('b'))
-        self.assertIsNone(node.next('a').next('c'))
+        self.assertIsNotNone(node.get('a').get('b'))
+        self.assertIsNone(node.get('b'))
+        self.assertIsNone(node.get('a').get('c'))
 
 
 class TestTrie(unittest.TestCase):
@@ -32,14 +32,14 @@ class TestTrie(unittest.TestCase):
         trie = Trie()
         node = trie.root
         trie.add('abc')
-        self.assertIsNotNone(node.next('a').next('b').next('c'))
-        self.assertTrue(node.next('a').next('b').next('c').is_word)
+        self.assertIsNotNone(node.get('a').get('b').get('c'))
+        self.assertTrue(node.get('a').get('b').get('c').is_word)
 
     def test_get_node(self):
         trie = Trie()
         node = trie.root
         trie.add('abc')
-        self.assertEqual(trie.get_node('abc'), node.next('a').next('b').next('c'))
+        self.assertEqual(trie.get_node('abc'), node.get('a').get('b').get('c'))
 
     def test_get_node2(self):
         trie = Trie()
@@ -49,7 +49,7 @@ class TestTrie(unittest.TestCase):
         trie.add('aaa')
         trie.add('a')
         trie.add('badacer')
-        self.assertEqual(trie.get_node('abc'), node.next('a').next('b').next('c'))
+        self.assertEqual(trie.get_node('abc'), node.get('a').get('b').get('c'))
         self.assertIsNotNone(trie.get_node('abc'))
         self.assertIsNotNone(trie.get_node('abcd'))
         self.assertIsNotNone(trie.get_node('aaa'))

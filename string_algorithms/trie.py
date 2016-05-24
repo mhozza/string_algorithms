@@ -6,9 +6,6 @@ class TrieNode(TreeNode):
         super(TrieNode, self).__init__()
         self.is_word = is_word
 
-    def next(self, char):
-        return self.children.get(char, None)
-
     def add(self, char, is_word=False, *args, **kwargs):
         return super(TrieNode, self).add(char, is_word)
 
@@ -27,7 +24,7 @@ class Trie(Tree):
     def get_node(self, word):
         node = self.root
         for c in word:
-            node = node.next(c)
+            node = node.get(c)
             if node is None:
                 break
         return node

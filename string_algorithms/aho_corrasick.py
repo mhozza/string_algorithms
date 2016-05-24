@@ -45,6 +45,6 @@ def find(patterns, text):
         while node != t.root and c not in node.children:
             node = node.fail
         if c in node.children:
-            node = node.next(c)
+            node = node.get(c)
             results += [(i - len(pattern_map[o]) + 1, pattern_map[o]) for o in node.output]
     return results
