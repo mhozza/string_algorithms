@@ -6,6 +6,9 @@ class LabeledNode:
     def __str__(self):
         return str(self.label)
 
+    def __repr__(self):
+        return '{}({})'.format(self.__class__.__name__, self.label)
+
     def add(self, key, label=None, *args, **kwargs):
         if label is None:
             label = key
