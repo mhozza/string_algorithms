@@ -1,4 +1,4 @@
-from .data_structures import TreeNode, Tree
+from .tree import TreeNode, Tree
 
 
 class TrieNode(TreeNode):

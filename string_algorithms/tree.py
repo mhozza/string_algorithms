@@ -43,16 +43,16 @@ class BinaryTree(Tree):
         super(BinaryTree, self).__init__(node_class=node_class, *args, **kwargs)
 
 
-def preorder_traversal(tree, action=lambda n: None):
+def preorder_traversal(tree, action=lambda n, d: None):
     visited = set()
 
-    def visit(node):
+    def visit(node, depth=0):
         if node in visited:
             return
         visited.add(node)
-        action(node)
+        action(node, depth)
         for n in node.children.values():
-            visit(n)
+            visit(n, depth+1)
 
     node = tree.root
     visit(node)
