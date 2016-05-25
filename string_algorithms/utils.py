@@ -8,3 +8,7 @@ def argmin(iterable):
 
 def greatest_pow2(n):
     return 2 ** floor(log2(n))
+
+
+def inverse_index(s):
+    return {v: k for k, v in enumerate(s)}
