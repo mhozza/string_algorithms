@@ -5,7 +5,7 @@ import unittest
 from string_algorithms.naive_find import find
 
 
-class TestAhoCorrasick(unittest.TestCase):
+class TestNaiveFind(unittest.TestCase):
     def test_find(self):
         text = 'tatatattgcgccatattagagattagatagga'
         self.assertListEqual(find('at', text), [1, 3, 5, 13, 15, 22, 27])
