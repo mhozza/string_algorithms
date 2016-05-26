@@ -32,6 +32,34 @@ def suffix_array(s):
             j += 1
         return s[i] == s[j]
 
+    def place_sorted_lms(sorted_lms, a):
+        counters = [e for _, e in buckets]
+        for p in reversed(sorted_lms):
+            a[counters[inverse_alphabet[s[p]]] - 1] = p
+            counters[inverse_alphabet[s[p]]] -= 1
+
+    def place_l_positions(a):
+        counters = [b for b, _ in buckets]
+        a[counters[inverse_alphabet[s[-1]]]] = len(s) - 1
+        counters[inverse_alphabet[s[-1]]] += 1
+        for i in a:
+            if i is None or i <= 0:
+                continue
+            p = i - 1
+            if t[p] == 1:
+                a[counters[inverse_alphabet[s[p]]]] = p
+                counters[inverse_alphabet[s[p]]] += 1
+
+    def place_s_positions(a):
+        counters = [e for _, e in buckets]
+        for i in reversed(a):
+            if i is None or i <= 0:
+                continue
+            p = i - 1
+            if t[p] == 0:
+                a[counters[inverse_alphabet[s[p]]] - 1] = p
+                counters[inverse_alphabet[s[p]]] -= 1
+
     # compute type
     t = [1] * len(s)
     for i in range(len(s) - 2, -1, -1):
@@ -56,32 +84,13 @@ def suffix_array(s):
     a = [None] * len(s)
     lms = [i for i in range(1, len(s)) if is_lms(i)]
     # (1.1)
-    counters = [e for _, e in buckets]
-    for p in reversed(lms):
-        a[counters[inverse_alphabet[s[p]]] - 1] = p
-        counters[inverse_alphabet[s[p]]] -= 1
+    place_sorted_lms(lms, a)
 
     # (1.2)
-    counters = [b for b, _ in buckets]
-    a[counters[inverse_alphabet[s[-1]]]] = len(s) - 1
-    counters[inverse_alphabet[s[-1]]] += 1
-    for i in a:
-        if i is None or i <= 0:
-            continue
-        p = i - 1
-        if t[p] == 1:
-            a[counters[inverse_alphabet[s[p]]]] = p
-            counters[inverse_alphabet[s[p]]] += 1
+    place_l_positions(a)
 
     # (1.3)
-    counters = [e for _, e in buckets]
-    for i in reversed(a):
-        if i is None or i <= 0:
-            continue
-        p = i - 1
-        if t[p] == 0:
-            a[counters[inverse_alphabet[s[p]]] - 1] = p
-            counters[inverse_alphabet[s[p]]] -= 1
+    place_s_positions(a)
 
     # (1.4)
     j = 0
@@ -111,31 +120,12 @@ def suffix_array(s):
     a = [None] * len(s)
     # phase 2:
     # (2.1)
-    counters = [e for _, e in buckets]
-    for p in reversed(sorted_lms):
-        a[counters[inverse_alphabet[s[p]]] - 1] = p
-        counters[inverse_alphabet[s[p]]] -= 1
+    place_sorted_lms(sorted_lms, a)
 
     # (2.2)
-    counters = [b for b, _ in buckets]
-    a[counters[inverse_alphabet[s[-1]]]] = len(s) - 1
-    counters[inverse_alphabet[s[-1]]] += 1
-    for i in a:
-        if i is None or i <= 0:
-            continue
-        p = i - 1
-        if t[p] == 1:
-            a[counters[inverse_alphabet[s[p]]]] = p
-            counters[inverse_alphabet[s[p]]] += 1
+    place_l_positions(a)
 
     # (2.3)
-    counters = [e for _, e in buckets]
-    for i in reversed(a):
-        if i is None or i <= 0:
-            continue
-        p = i - 1
-        if t[p] == 0:
-            a[counters[inverse_alphabet[s[p]]] - 1] = p
-            counters[inverse_alphabet[s[p]]] -= 1
+    place_s_positions(a)
 
     return tuple(a)
