@@ -47,7 +47,7 @@ def suffix_array(s):
             return False
         i += 1
         j += 1
-        while s[i] == s[j] and not is_lms(i) and not is_lms(j):
+        while i < len(s) - 1 and j < len(s) - 1 and s[i] == s[j] and not is_lms(i) and not is_lms(j):
             i += 1
             j += 1
         return s[i] == s[j]
@@ -105,11 +105,9 @@ def suffix_array(s):
 
     # (1.5 - 1.8)
     ss = [LN[i] for i in lms]
-    if j == len(s) - 1:
-        ssa = ss
-    else:
-        ssa = suffix_array(ss)
-    sorted_lms = [lms[ssa[i]] for i in range(len(lms))]
+    if j < len(s) - 1:
+        ss = suffix_array(ss)
+    sorted_lms = [lms[ss[i]] for i in range(len(lms))]
 
     a = [None] * len(s)
     # phase 2:
