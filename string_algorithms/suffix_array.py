@@ -17,6 +17,26 @@ def suffix_array(s):
     if not s:
         return tuple()
 
+    # compute type
+    t = [1] * len(s)
+    for i in range(len(s) - 2, -1, -1):
+        if s[i] < s[i + 1]:
+            t[i] = 0
+        elif s[i] > s[i + 1]:
+            t[i] = 1
+        else:
+            t[i] = t[i + 1]
+
+    # compute bucket sizes:
+    freq = Counter(s)
+    alphabet = tuple(sorted(freq.keys()))
+    inverse_alphabet = inverse_index(alphabet)
+    buckets = []
+    sum = 0
+    for a in alphabet:
+        buckets.append((sum, sum + freq[a]))
+        sum += freq[a]
+
     def is_lms(i):
         if i == 0:
             return False
@@ -60,36 +80,13 @@ def suffix_array(s):
                 a[counters[inverse_alphabet[s[p]]] - 1] = p
                 counters[inverse_alphabet[s[p]]] -= 1
 
-    # compute type
-    t = [1] * len(s)
-    for i in range(len(s) - 2, -1, -1):
-        if s[i] < s[i+1]:
-            t[i] = 0
-        elif s[i] > s[i + 1]:
-            t[i] = 1
-        else:
-            t[i] = t[i+1]
-
-    # compute bucket sizes:
-    freq = Counter(s)
-    alphabet = tuple(sorted(freq.keys()))
-    inverse_alphabet = inverse_index(alphabet)
-    buckets = []
-    sum = 0
-    for a in alphabet:
-        buckets.append((sum, sum + freq[a]))
-        sum += freq[a]
 
     # phase 1: sort LMS positions
     a = [None] * len(s)
     lms = [i for i in range(1, len(s)) if is_lms(i)]
-    # (1.1)
+    # (1.1 - 1.3)
     place_sorted_lms(lms, a)
-
-    # (1.2)
     place_l_positions(a)
-
-    # (1.3)
     place_s_positions(a)
 
     # (1.4)
@@ -106,26 +103,18 @@ def suffix_array(s):
             LN[i] = j
             prev = i
 
-    # (1.5)
+    # (1.5 - 1.8)
     ss = [LN[i] for i in lms]
     if j == len(s) - 1:
-        # (1.6)
         ssa = ss
     else:
-        # (1.7)
         ssa = suffix_array(ss)
-    # (1.8)
     sorted_lms = [lms[ssa[i]] for i in range(len(lms))]
 
     a = [None] * len(s)
     # phase 2:
-    # (2.1)
     place_sorted_lms(sorted_lms, a)
-
-    # (2.2)
     place_l_positions(a)
-
-    # (2.3)
     place_s_positions(a)
 
     return tuple(a)
