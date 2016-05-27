@@ -1,6 +1,6 @@
-from operator import itemgetter
 from collections import Counter
 
+from string_algorithms.tree import SimpleTreeNode
 from string_algorithms.utils import inverse_index, inverse_index_array
 
 
@@ -130,3 +130,34 @@ def lcp_array(s, sa):
                 l -= 1
     return tuple(lcp)
 
+
+class LCPTreeNode(SimpleTreeNode):
+    def __init__(self, lcp, lb, rb=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.lcp = lcp
+        self.lb = lb
+        self.rb = rb
+
+
+def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False):
+    last_interval = None
+    stack = list()
+    stack.append(LCPTreeNode(0, 0))
+    for k in range(1, len(lcp)):
+        l = k - 1
+        while lcp[k] < stack[-1].lcp:  # close all interval on stack that ended at position k - 1
+            stack[-1].rb = k - 1
+            last_interval = stack.pop()
+            if action:
+                action(last_interval)
+            if not keep_tree:  # children are no more needed
+                last_interval.children.clear()
+            l = last_interval.lb
+            if lcp[k] <= stack[-1].lcp:
+                stack[-1].add(last_interval)
+                last_interval = None
+        if lcp[k] > stack[-1].lcp:  # open new interval
+            stack.append(LCPTreeNode(lcp[k], l))
+            if last_interval is not None:
+                stack[-1].add(last_interval)
+                last_interval = None
