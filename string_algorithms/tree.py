@@ -15,6 +15,22 @@ class TreeNode:
         return self.children[key]
 
 
+class SimpleTreeNode:
+    def __init__(self, *args, **kwargs):
+        self.children = list()
+
+    def get(self, index):
+        return self.children[index]
+
+    def add(self, *args, **kwargs):
+        self.children.append(self.__class__(*args, **kwargs))
+        return self.children[-1]
+
+    def set(self, index, val, *args, **kwargs):
+        self.children[index] = val
+        return self.children[index]
+
+
 class BinaryNode(TreeNode):
     @property
     def left(self):
@@ -61,7 +77,10 @@ def euler_tour(tree, action=None, pre_action=None, post_action=None, sort=False)
         visited.add(node)
         if pre_action:
             pre_action(node, depth)
-        children = sorted(node.children.values()) if sort else node.children.values()
+        if type(node.children) is dict:
+            children = sorted(node.children.values()) if sort else node.children.values()
+        else:  # assume it is list-like
+            children = node.children
         for n in children:
             visit(n, depth+1)
             if post_action:
