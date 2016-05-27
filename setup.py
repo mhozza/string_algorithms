@@ -14,7 +14,7 @@ requirements = [
 
 setup(
     name='string_algorithms',
-    version='0.3.0',
+    version='0.4.0',
     description="Collection of various string algorithms, "
                 "including KMP, Aho-Corasick, Trie, SuffixArrays",
     long_description=readme,
