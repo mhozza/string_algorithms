@@ -1,7 +1,7 @@
 from operator import itemgetter
 from collections import Counter
 
-from string_algorithms.utils import inverse_index
+from string_algorithms.utils import inverse_index, inverse_index_array
 
 
 def naive_suffix_array(s):
@@ -33,9 +33,9 @@ def suffix_array(s):
     inverse_alphabet = inverse_index(alphabet)
     buckets = []
     sum = 0
-    for a in alphabet:
-        buckets.append((sum, sum + freq[a]))
-        sum += freq[a]
+    for sa in alphabet:
+        buckets.append((sum, sum + freq[sa]))
+        sum += freq[sa]
 
     def is_lms(i):
         if i == 0:
@@ -52,9 +52,9 @@ def suffix_array(s):
             j += 1
         return s[i] == s[j]
 
-    def place_sorted_lms(sorted_lms, a):
+    def place_lms(lms, a):
         counters = [e for _, e in buckets]
-        for p in reversed(sorted_lms):
+        for p in reversed(lms):
             a[counters[inverse_alphabet[s[p]]] - 1] = p
             counters[inverse_alphabet[s[p]]] -= 1
 
@@ -80,39 +80,53 @@ def suffix_array(s):
                 a[counters[inverse_alphabet[s[p]]] - 1] = p
                 counters[inverse_alphabet[s[p]]] -= 1
 
-
     # phase 1: sort LMS positions
-    a = [None] * len(s)
+    sa = [None] * len(s)
     lms = [i for i in range(1, len(s)) if is_lms(i)]
     # (1.1 - 1.3)
-    place_sorted_lms(lms, a)
-    place_l_positions(a)
-    place_s_positions(a)
-
+    place_lms(lms, sa)
+    place_l_positions(sa)
+    place_s_positions(sa)
     # (1.4)
     j = 0
     prev = None
-    LN = dict()
-    for i in filter(is_lms, a):
+    ln = dict()
+    for i in filter(is_lms, sa):
         if prev is None:
-            LN[i] = j
+            ln[i] = j
             prev = i
         else:
             if not is_equal(i, prev):
                 j += 1
-            LN[i] = j
+            ln[i] = j
             prev = i
-
     # (1.5 - 1.8)
-    ss = [LN[i] for i in lms]
+    ss = [ln[i] for i in lms]
     if j < len(s) - 1:
         ss = suffix_array(ss)
     sorted_lms = [lms[ss[i]] for i in range(len(lms))]
 
-    a = [None] * len(s)
-    # phase 2:
-    place_sorted_lms(sorted_lms, a)
-    place_l_positions(a)
-    place_s_positions(a)
+    # phase 2: build suffix array
+    sa = [None] * len(s)
+    place_lms(sorted_lms, sa)
+    place_l_positions(sa)
+    place_s_positions(sa)
+    return tuple(sa)
 
-    return tuple(a)
+
+def lcp_array(s, sa):
+    assert (len(s) == len(sa))
+    isa = inverse_index_array(sa)
+    lcp = [0] * len(s)
+    l = 0
+    for i in range(len(s)):
+        j = isa[i]
+        if j:
+            k = sa[j - 1]
+            while k + l < len(s) and i + l < len(s) and s[k + l] == s[i + l]:
+                l += 1
+            lcp[j] = l
+            if l:
+                l -= 1
+    return tuple(lcp)
+
