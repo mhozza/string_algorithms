@@ -3,10 +3,10 @@
 import unittest
 
 from string_algorithms.tree import Tree, TreeNode, preorder_traversal, euler_tour
-from string_algorithms.node_mixins import LabeledNode
+from string_algorithms.node_mixins import LabeledNodeMixin
 
 
-class LabeledTreeNode(LabeledNode, TreeNode):
+class LabeledTreeNode(LabeledNodeMixin, TreeNode):
     pass
 
 
@@ -74,6 +74,7 @@ class TestPreorderTraversal(unittest.TestCase):
         preorder_traversal(tree, action)
         self.assertListEqual(depths, correct_depth)
         self.assertCountEqual([n.label for n in path], correct_path)
+
 
 class TestEulerTour(unittest.TestCase):
     def test_euler_tour_sorted(self):

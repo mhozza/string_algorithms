@@ -4,10 +4,10 @@ import unittest
 
 from string_algorithms.tree import Tree, TreeNode
 from string_algorithms.lca import LCA
-from string_algorithms.node_mixins import LabeledNode
+from string_algorithms.node_mixins import LabeledNodeMixin
 
 
-class LabeledTreeNode(LabeledNode, TreeNode):
+class LabeledTreeNode(LabeledNodeMixin, TreeNode):
     pass
 
 
