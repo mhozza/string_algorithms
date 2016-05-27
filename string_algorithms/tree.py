@@ -48,8 +48,7 @@ def preorder_traversal(tree, action=None, sort=False):
 
 
 def euler_tour(tree, action=None, pre_action=None, post_action=None, sort=False):
-    if action is not None and pre_action is not None or post_action is not None:
-        raise AttributeError('Cannot set both action and pre_action or post_action')
+    assert(action is None or pre_action is None and post_action is None)
 
     if action is not None and pre_action is None and post_action is None:
         pre_action = post_action = action
