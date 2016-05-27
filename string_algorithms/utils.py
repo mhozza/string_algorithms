@@ -1,5 +1,5 @@
+from math import floor, log2
 from operator import itemgetter
-from math import log2, floor
 
 
 def argmin(iterable):

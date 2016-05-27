@@ -1,4 +1,4 @@
-from .tree import TreeNode, Tree
+from .tree import Tree, TreeNode
 
 
 class TrieNode(TreeNode):

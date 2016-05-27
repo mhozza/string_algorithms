@@ -4,7 +4,9 @@ import random
 import string
 import unittest
 
-from string_algorithms.suffix_array import naive_suffix_array, suffix_array, lcp_array, bottom_up_lcp_interval_tree_traverse
+from string_algorithms.suffix_array import (bottom_up_lcp_interval_tree_traverse,
+                                            lcp_array, naive_suffix_array,
+                                            suffix_array)
 
 
 class TestNaiveSuffixArray(unittest.TestCase):

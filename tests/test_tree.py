@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from string_algorithms.tree import Tree, TreeNode, preorder_traversal, euler_tour
 from string_algorithms.node_mixins import LabeledNodeMixin
+from string_algorithms.tree import (Tree, TreeNode, euler_tour,
+                                    preorder_traversal)
 
 
 class LabeledTreeNode(LabeledNodeMixin, TreeNode):

@@ -1,5 +1,5 @@
-from .tree import euler_tour
 from .rmq import RMQ
+from .tree import euler_tour
 
 
 class LCA:

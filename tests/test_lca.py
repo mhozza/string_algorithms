@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from string_algorithms.tree import Tree, TreeNode
 from string_algorithms.lca import LCA
 from string_algorithms.node_mixins import LabeledNodeMixin
+from string_algorithms.tree import Tree, TreeNode
 
 
 class LabeledTreeNode(LabeledNodeMixin, TreeNode):

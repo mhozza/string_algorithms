@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from string_algorithms.exact_string_matching import naive_find, kmp, kmp_preprocess, aho_corrasick, aho_corrasick_preprocess
+from string_algorithms.exact_string_matching import (aho_corrasick,
+                                                     aho_corrasick_preprocess,
+                                                     kmp, kmp_preprocess,
+                                                     naive_find)
 
 
 class TestNaiveFind(unittest.TestCase):
