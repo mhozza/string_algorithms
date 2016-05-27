@@ -4,7 +4,7 @@ import random
 import string
 import unittest
 
-from string_algorithms.suffix_array import naive_suffix_array, suffix_array, lcp_array
+from string_algorithms.suffix_array import naive_suffix_array, suffix_array, lcp_array, bottom_up_lcp_interval_tree_traverse
 
 
 class TestNaiveSuffixArray(unittest.TestCase):
@@ -99,3 +99,68 @@ class TestLCPArray(unittest.TestCase):
             self.assertTupleEqual(
                 lcp_array(text, sa), correct_lcp
             )
+
+
+class TestBottomUpLCPINtervalTreeTraversal(unittest.TestCase):
+    def test_traverse(self):
+        lcp = []
+        lb = []
+        rb = []
+
+        def action(node):
+            lcp.append(node.lcp)
+            lb.append(node.lb)
+            rb.append(node.rb)
+
+        text = 'ctaataatg'
+        sa = suffix_array(text)
+        lcpa = lcp_array(text, sa)
+        bottom_up_lcp_interval_tree_traverse(lcpa, action)
+
+        correct_lcp = [3, 2, 1, 4, 1, 0]
+        correct_lb = [0, 2, 0, 6, 6, 0]
+        correct_rb = [2, 4, 4, 8, 9, 9]
+
+        self.assertListEqual(lcp, correct_lcp)
+        self.assertListEqual(lb, correct_lb)
+        self.assertListEqual(rb, correct_rb)
+
+    def test_keep_tree(self):
+        lcp = []
+        lb = []
+        rb = []
+
+        def action(node):
+            lcp.append(node.lcp)
+            lb.append(node.lb)
+            rb.append(node.rb)
+
+        correct_lcp = [3, 2, 1, 4, 1, 0]
+        correct_lb = [0, 2, 0, 6, 6, 0]
+        correct_rb = [2, 4, 4, 8, 9, 9]
+
+        text = 'ctaataatg'
+        sa = suffix_array(text)
+        lcpa = lcp_array(text, sa)
+        root = bottom_up_lcp_interval_tree_traverse(lcpa, action, keep_tree=True)
+
+        self.assertListEqual(lcp, correct_lcp)
+        self.assertListEqual(lb, correct_lb)
+        self.assertListEqual(rb, correct_rb)
+        self.assertEqual(root.lcp, 0)
+        self.assertEqual(root.lb, 0)
+        self.assertEqual(root.rb, 9)
+        node = root.get(0)
+        self.assertEqual(node.lcp, 1)
+        self.assertEqual(node.lb, 0)
+        self.assertEqual(node.rb, 4)
+        node2 = node.get(0)
+        self.assertEqual(node2.lcp, 3)
+        self.assertEqual(node2.lb, 0)
+        self.assertEqual(node2.rb, 2)
+        node2 = node.get(1)
+        self.assertEqual(node2.lcp, 2)
+        node2 = root.get(1)
+        self.assertEqual(node2.lcp, 1)
+        node2 = root.get(1).get(0)
+        self.assertEqual(node2.lcp, 4)

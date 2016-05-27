@@ -139,25 +139,28 @@ class LCPTreeNode(SimpleTreeNode):
         self.rb = rb
 
 
-def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False):
+def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, node_class=LCPTreeNode):
     last_interval = None
     stack = list()
-    stack.append(LCPTreeNode(0, 0))
-    for k in range(1, len(lcp)):
+    stack.append(node_class(0, 0))
+    for k in range(1, len(lcp) + 1):
         l = k - 1
-        while lcp[k] < stack[-1].lcp:  # close all interval on stack that ended at position k - 1
-            stack[-1].rb = k - 1
+        # close all interval on stack that ended at position k - 1
+        while len(stack) and (k == len(lcp) or lcp[k] < stack[-1].lcp):
+            stack[-1].rb = k
             last_interval = stack.pop()
             if action:
                 action(last_interval)
-            if not keep_tree:  # children are no more needed
+            if not keep_tree:  # children are no more needed, so free the memory
                 last_interval.children.clear()
             l = last_interval.lb
-            if lcp[k] <= stack[-1].lcp:
-                stack[-1].add(last_interval)
+            if len(stack) and (k == len(lcp) or lcp[k] <= stack[-1].lcp):
+                stack[-1].children.append(last_interval)
                 last_interval = None
-        if lcp[k] > stack[-1].lcp:  # open new interval
-            stack.append(LCPTreeNode(lcp[k], l))
+        if len(stack) and (k == len(lcp) or lcp[k] > stack[-1].lcp):  # open new interval
+            stack.append(node_class(lcp[k], l))
             if last_interval is not None:
-                stack[-1].add(last_interval)
+                stack[-1].children.append(last_interval)
                 last_interval = None
+    if keep_tree:
+        return last_interval  # return root node
