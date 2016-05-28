@@ -162,5 +162,4 @@ def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, node
             if last_interval is not None:
                 stack[-1].children.append(last_interval)
                 last_interval = None
-    if keep_tree:
-        return last_interval  # return root node
+    return last_interval  # return root node
