@@ -3,8 +3,7 @@
 import unittest
 
 from string_algorithms.node_mixins import LabeledNodeMixin
-from string_algorithms.tree import (Tree, TreeNode, euler_tour,
-                                    preorder_traversal)
+from string_algorithms.tree import dfs, Tree, TreeNode
 
 
 class LabeledTreeNode(LabeledNodeMixin, TreeNode):
@@ -33,50 +32,6 @@ class TestTreeNode(unittest.TestCase):
         self.assertIsNone(node.get(1).get(3))
 
 
-class TestPreorderTraversal(unittest.TestCase):
-    def test_preorder_traversal_sorted(self):
-        path = []
-        depths = []
-
-        def action(node, depth):
-            path.append(node)
-            depths.append(depth)
-
-        tree = Tree(node_class=LabeledTreeNode, label=0)
-        tree.root.add(1).add(2).add(3)
-        tree.root.add(4).add(5)
-        tree.root.get(1).add(6).add(7)
-        tree.root.get(1).get(2).add(8)
-        tree.root.get(1).get(2).add(9)
-
-        correct_path = [0, 1, 2, 3, 8, 9, 6, 7, 4, 5]
-        correct_depth = [0, 1, 2, 3, 3, 3, 2, 3, 1, 2]
-        preorder_traversal(tree, action, sort=True)
-        self.assertListEqual(depths, correct_depth)
-        self.assertListEqual([n.label for n in path], correct_path)
-
-    def test_preorder_traversal(self):
-        path = []
-        depths = []
-
-        def action(node, depth):
-            path.append(node)
-            depths.append(depth)
-
-        tree = Tree(node_class=LabeledTreeNode, label=0)
-        tree.root.add(1).add(2).add(3)
-        tree.root.add(4).add(5)
-        tree.root.get(1).add(6).add(7)
-        tree.root.get(1).get(2).add(8)
-        tree.root.get(1).get(2).add(9)
-
-        correct_path = [0, 1, 2, 3, 8, 9, 6, 7, 4, 5]
-        correct_depth = [0, 1, 2, 3, 3, 3, 2, 3, 1, 2]
-        preorder_traversal(tree, action)
-        self.assertListEqual(depths, correct_depth)
-        self.assertCountEqual([n.label for n in path], correct_path)
-
-
 class TestEulerTour(unittest.TestCase):
     def test_euler_tour_sorted(self):
         path = []
@@ -95,7 +50,7 @@ class TestEulerTour(unittest.TestCase):
 
         correct_path = [0, 1, 2, 3, 2, 8, 2, 9, 2, 1, 6, 7, 6, 1, 0, 4, 5, 4, 0]
         correct_depth = [0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 3, 2, 1, 0, 1, 2, 1, 0]
-        euler_tour(tree, action, sort=True)
+        dfs(tree, action, sort=True)
         self.assertListEqual(depths, correct_depth)
         self.assertListEqual([n.label for n in path], correct_path)
 
@@ -116,6 +71,6 @@ class TestEulerTour(unittest.TestCase):
 
         correct_path = [0, 1, 2, 3, 2, 8, 2, 9, 2, 1, 6, 7, 6, 1, 0, 4, 5, 4, 0]
         correct_depth = [0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 3, 2, 1, 0, 1, 2, 1, 0]
-        euler_tour(tree, action)
+        dfs(tree, action)
         self.assertListEqual(depths, correct_depth)
         self.assertCountEqual([n.label for n in path], correct_path)

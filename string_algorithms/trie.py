@@ -6,8 +6,8 @@ class TrieNode(TreeNode):
         super(TrieNode, self).__init__()
         self.is_word = is_word
 
-    def add(self, char, is_word=False, *args, **kwargs):
-        return super(TrieNode, self).add(char, is_word)
+    def add(self, char, node=None, is_word=False, *args, **kwargs):
+        return super(TrieNode, self).add(char, node, is_word)
 
 
 class Trie(Tree):
@@ -17,7 +17,7 @@ class Trie(Tree):
     def add(self, word, *args, **kwargs):
         node = self.root
         for c in word:
-            node = node.add(c, False, *args, **kwargs)
+            node = node.add(c, is_word=False, *args, **kwargs)
         node.is_word = True
         return node
 

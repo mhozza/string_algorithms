@@ -1,6 +1,6 @@
 from collections import Counter
 
-from string_algorithms.tree import SimpleTreeNode
+from string_algorithms.tree import OrderedTreeNode
 from string_algorithms.utils import inverse_index, inverse_index_array
 
 
@@ -131,7 +131,7 @@ def lcp_array(s, sa):
     return tuple(lcp)
 
 
-class LCPTreeNode(SimpleTreeNode):
+class LCPTreeNode(OrderedTreeNode):
     def __init__(self, lcp, lb, rb=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.lcp = lcp
