@@ -2,8 +2,12 @@ from math import floor, log2
 from operator import itemgetter
 
 
-def argmin(iterable):
-    return min(enumerate(iterable), key=itemgetter(1))
+def argmin(*args):
+    if len(args) == 1:
+        iterable = args[0]
+    else:
+        iterable = args
+    return min((j, i) for i, j in enumerate(iterable))[1]
 
 
 def greatest_pow2(n):

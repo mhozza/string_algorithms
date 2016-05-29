@@ -4,6 +4,7 @@ import unittest
 from random import randint
 
 from string_algorithms.rmq import RMQ
+from string_algorithms.utils import argmin
 
 
 class TestRMQ(unittest.TestCase):
@@ -35,8 +36,8 @@ class TestRMQ(unittest.TestCase):
         for si in range(len(self.rmq.processed_block_mins)):
             for i in range(len(self.rmq.processed_block_mins[si])):
                 self.assertEqual(
-                    self.rmq.processed_block_mins[si][i],
-                    min(i for _, i in self.rmq.block_mins[i:min(i+2**si, len(self.rmq.block_mins))]),
+                    self.array[self.rmq.processed_block_mins[si][i]],
+                    min(self.array[i] for i in self.rmq.block_mins[i:min(i+2**si, len(self.rmq.block_mins))]),
                 )
 
     def test_query_aligned(self):
@@ -53,3 +54,10 @@ class TestRMQ(unittest.TestCase):
             i = randint(0, len(self.array) - 2)
             j = randint(i + 1, len(self.array) - 1)
             self.assertEqual(self.rmq.query(i, j), min(self.array[i:j]))
+
+    def test_query_pos(self):
+        test_cnt = 1000
+        for t in range(test_cnt):
+            i = randint(0, len(self.array) - 2)
+            j = randint(i + 1, len(self.array) - 1)
+            self.assertEqual(self.rmq.query_pos(i, j), i + argmin(self.array[i:j]))
