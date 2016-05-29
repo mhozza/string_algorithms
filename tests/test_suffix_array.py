@@ -6,7 +6,7 @@ import unittest
 
 from string_algorithms.suffix_array import (bottom_up_lcp_interval_tree_traverse,
                                             lcp_array, naive_suffix_array,
-                                            suffix_array)
+                                            suffix_array, top_down_lcp_interval_tree_traverse)
 
 
 class TestNaiveSuffixArray(unittest.TestCase):
@@ -145,6 +145,71 @@ class TestBottomUpLCPINtervalTreeTraversal(unittest.TestCase):
         sa = suffix_array(text)
         lcpa = lcp_array(text, sa)
         root = bottom_up_lcp_interval_tree_traverse(lcpa, action, keep_tree=True)
+
+        self.assertListEqual(lcp, correct_lcp)
+        self.assertListEqual(lb, correct_lb)
+        self.assertListEqual(rb, correct_rb)
+        self.assertEqual(root.lcp, 0)
+        self.assertEqual(root.lb, 0)
+        self.assertEqual(root.rb, 9)
+        node = root.get(0)
+        self.assertEqual(node.lcp, 1)
+        self.assertEqual(node.lb, 0)
+        self.assertEqual(node.rb, 4)
+        node2 = node.get(0)
+        self.assertEqual(node2.lcp, 3)
+        self.assertEqual(node2.lb, 0)
+        self.assertEqual(node2.rb, 2)
+        node2 = node.get(1)
+        self.assertEqual(node2.lcp, 2)
+        node2 = root.get(1)
+        self.assertEqual(node2.lcp, 1)
+        node2 = root.get(1).get(0)
+        self.assertEqual(node2.lcp, 4)
+
+
+class TestTopDownLCPINtervalTreeTraversal(unittest.TestCase):
+    def test_traverse(self):
+        lcp = []
+        lb = []
+        rb = []
+
+        def action(node):
+            lcp.append(node.lcp)
+            lb.append(node.lb)
+            rb.append(node.rb)
+
+        text = 'ctaataatg'
+        sa = suffix_array(text)
+        lcpa = lcp_array(text, sa)
+        top_down_lcp_interval_tree_traverse(lcpa, action)
+
+        correct_lcp = [0, 1, 3, 2, 1, 4]
+        correct_lb = [0, 0, 0, 2, 6, 6]
+        correct_rb = [9, 4, 2, 4, 9, 8]
+
+        self.assertListEqual(lcp, correct_lcp)
+        self.assertListEqual(lb, correct_lb)
+        self.assertListEqual(rb, correct_rb)
+
+    def test_keep_tree(self):
+        lcp = []
+        lb = []
+        rb = []
+
+        def action(node):
+            lcp.append(node.lcp)
+            lb.append(node.lb)
+            rb.append(node.rb)
+
+        correct_lcp = [0, 1, 3, 2, 1, 4]
+        correct_lb = [0, 0, 0, 2, 6, 6]
+        correct_rb = [9, 4, 2, 4, 9, 8]
+
+        text = 'ctaataatg'
+        sa = suffix_array(text)
+        lcpa = lcp_array(text, sa)
+        root = top_down_lcp_interval_tree_traverse(lcpa, action, keep_tree=True)
 
         self.assertListEqual(lcp, correct_lcp)
         self.assertListEqual(lb, correct_lb)

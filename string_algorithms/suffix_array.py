@@ -1,5 +1,6 @@
 from collections import Counter
 
+from string_algorithms.rmq import RMQ
 from string_algorithms.tree import OrderedTreeNode
 from string_algorithms.utils import inverse_index, inverse_index_array
 
@@ -40,7 +41,7 @@ def suffix_array(s):
     def is_lms(i):
         if i == 0:
             return False
-        return t[i] == 0 and t[i-1] == 1
+        return t[i] == 0 and t[i - 1] == 1
 
     def is_equal(i, j):
         if s[i] != s[j]:
@@ -163,3 +164,35 @@ def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, node
                 stack[-1].children.append(last_interval)
                 last_interval = None
     return last_interval  # return root node
+
+
+def top_down_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, include_singletons=False,
+                                        node_class=LCPTreeNode):
+    def get_children(node):
+        i, j = node.lb, node.rb
+        children = []
+        if i == j - 1:
+            return children
+        k = i
+        l = rmq.query(i + 1, j)
+        while k < j:
+            m = rmq.query_pos(k + 1, j)
+            if m is None or lcp[m] != l:
+                m = j
+            if k < m - 1 or include_singletons:
+                children.append(node_class(rmq.query(k + 1, m), k, m))
+            k = m
+        return children
+
+    def visit(node):
+        action(node)
+        children = get_children(node)
+        if keep_tree:
+            node.children = children
+        for child in children:
+            visit(child)
+
+    rmq = RMQ(lcp)
+    root = node_class(0, 0, len(lcp))
+    visit(root)
+    return root
