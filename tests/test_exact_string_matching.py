@@ -5,10 +5,16 @@ import unittest
 from string_algorithms.exact_string_matching import (aho_corrasick,
                                                      aho_corrasick_preprocess,
                                                      kmp, kmp_preprocess,
-                                                     naive_find)
+                                                     naive_find,
+                                                     suffix_array_match)
+from string_algorithms.suffix_array import suffix_array, lcp_array, LCPConceptualIntervalTree
 
 
 class TestNaiveFind(unittest.TestCase):
+    def test_not_find(self):
+        text = 'tatatattgcgccatattagagattagatagga'
+        self.assertListEqual(naive_find('alt', text), [])
+
     def test_find(self):
         text = 'tatatattgcgccatattagagattagatagga'
         self.assertListEqual(naive_find('at', text), [1, 3, 5, 13, 15, 22, 27])
@@ -67,6 +73,10 @@ class TestKMPPreprocess(unittest.TestCase):
 
 
 class TestKMP(unittest.TestCase):
+    def test_not_find(self):
+        text = 'tatatattgcgccatattagagattagatagga'
+        self.assertListEqual(kmp('alt', text), [])
+
     def test_small(self):
         patterns = ('at', 'gag', 'gc', 'gata')
         text = 'tatatattgcgccatattagagattagatagga'
@@ -96,3 +106,28 @@ class TestAhoCorrasick(unittest.TestCase):
             result |= set(((o, pattern) for o in occurrences))
 
         self.assertSetEqual(result, set(aho_corrasick(patterns, text)))
+
+
+class TestSAMatch(unittest.TestCase):
+    def test_not_find(self):
+        text = 'tatatattgcgccatattagagattagatagga'
+        sa = suffix_array(text)
+        lcp = lcp_array(text, sa)
+        lcptree = LCPConceptualIntervalTree(lcp)
+        self.assertListEqual(suffix_array_match('alt', text, sa, lcptree), [])
+
+    def test_small(self):
+        patterns = ('at', 'gag', 'gc', 'gata')
+        text = 'tatatattgcgccatattagagattagatagga'
+        sa = suffix_array(text)
+        lcp = lcp_array(text, sa)
+        lcptree = LCPConceptualIntervalTree(lcp)
+        for pattern in patterns:
+            self.assertListEqual(suffix_array_match(pattern, text, sa, lcptree, sort=True), naive_find(pattern, text))
+
+    def test_small2(self):
+        text = 'ctaataatg'
+        sa = suffix_array(text)
+        lcp = lcp_array(text, sa)
+        lcptree = LCPConceptualIntervalTree(lcp)
+        self.assertListEqual(suffix_array_match('taa', text, sa, lcptree, sort=True), naive_find('taa', text))
