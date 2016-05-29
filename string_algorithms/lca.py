@@ -12,7 +12,7 @@ class LCA:
         self.compute_representatives()
         self.rmq = RMQ(self.depths)
 
-    def compute_arrays_action(self, node, depth):
+    def compute_arrays_action(self, node, depth, *_):
         self.euler_tour.append(node)
         self.depths.append(depth)
 

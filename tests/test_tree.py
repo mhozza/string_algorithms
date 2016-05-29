@@ -37,7 +37,7 @@ class TestEulerTour(unittest.TestCase):
         path = []
         depths = []
 
-        def action(node, depth):
+        def action(node, depth, *_):
             path.append(node)
             depths.append(depth)
 
@@ -58,7 +58,7 @@ class TestEulerTour(unittest.TestCase):
         path = []
         depths = []
 
-        def action(node, depth):
+        def action(node, depth, *_):
             path.append(node)
             depths.append(depth)
 

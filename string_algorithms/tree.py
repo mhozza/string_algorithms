@@ -61,11 +61,11 @@ def dfs(tree, action=None, pre_action=None, post_action=None, sort=False):
     if action is not None and pre_action is None and post_action is None:
         pre_action = post_action = action
 
-    def visit(node, depth=0):
+    def visit(node, depth=0, parent=None):
         if pre_action:
-            pre_action(node, depth)
+            pre_action(node, depth, parent)
         for n in tree.get_children(node, sort=sort):
-            visit(n, depth+1)
+            visit(n, depth+1, node)
             if post_action:
-                post_action(node, depth)
+                post_action(node, depth, parent)
     visit(tree.root)
