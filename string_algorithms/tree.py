@@ -45,32 +45,9 @@ class OrderedTreeNode:
         return self.children[index]
 
 
-class BinaryNode(TreeNode):
-    @property
-    def left(self):
-        return self.get(0)
-
-    @left.setter
-    def left(self, val):
-        self.set(0, val)
-
-    @property
-    def right(self):
-        return self.get(1)
-
-    @right.setter
-    def right(self, val):
-        self.set(1, val)
-
-
 class Tree:
     def __init__(self, node_class=TreeNode, *args, **kwargs):
         self.root = node_class(*args, **kwargs)
-
-
-class BinaryTree(Tree):
-    def __init__(self, node_class=BinaryNode, *args, **kwargs):
-        super(BinaryTree, self).__init__(node_class=node_class, *args, **kwargs)
 
 
 def dfs(tree, action=None, pre_action=None, post_action=None, sort=False):
