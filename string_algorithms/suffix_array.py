@@ -189,19 +189,3 @@ class LCPConceptualIntervalTree(Tree):
                 children.append(self.node_class(self.rmq.query(k + 1, m), k, m))
             k = m
         return children
-
-
-# class LCPIntervalTree(LCPConceptualIntervalTree):
-#     def dfs(self, action=None, pre_action=None, post_action=None):
-#         assert (action is None or (pre_action is None and post_action is None))
-#         if action is not None and pre_action is None and post_action is None:
-#             pre_action = post_action = action
-#
-#         def keep_pre_action(node, depth, parent):
-#             if parent:
-#                 parent.add(node)
-#             if pre_action:
-#                 pre_action(node, depth)
-#
-#         dfs(pre_action=keep_pre_action, post_action=post_action)
-
