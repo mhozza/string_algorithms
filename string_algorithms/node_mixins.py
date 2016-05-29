@@ -1,7 +1,7 @@
 class LabeledOrderedNodeMixin:
-    def __init__(self, label, *args, **kwargs):
+    def __init__(self, label, **kwargs):
         self.label = label
-        super(LabeledOrderedNodeMixin, self).__init__(*args, **kwargs)
+        super(LabeledOrderedNodeMixin, self).__init__(**kwargs)
 
     def __str__(self):
         return str(self.label)
@@ -14,7 +14,7 @@ class LabeledOrderedNodeMixin:
 
 
 class LabeledNodeMixin(LabeledOrderedNodeMixin):
-    def add(self, key, node=None, label=None, *args, **kwargs):
+    def add(self, key, node=None, label=None, **kwargs):
         if label is None:
             label = key
-        return super(LabeledNodeMixin, self).add(key, node, label=label)
+        return super(LabeledNodeMixin, self).add(key, node, label=label, **kwargs)

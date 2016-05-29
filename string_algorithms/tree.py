@@ -1,5 +1,5 @@
 class TreeNode:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.children = dict()
 
     def get(self, key):
@@ -10,20 +10,20 @@ class TreeNode:
             return sorted(self.children.values())
         return self.children.values()
 
-    def add(self, key, node=None, *args, **kwargs):
+    def add(self, key, node=None, **kwargs):
         if key not in self.children:
             if node is None:
-                node = self.__class__(*args, **kwargs)
+                node = self.__class__(**kwargs)
             self.children[key] = node
         return self.children[key]
 
-    def set(self, key, val, *args, **kwargs):
+    def set(self, key, val, **kwargs):
         self.children[key] = val
         return self.children[key]
 
 
 class OrderedTreeNode:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.children = list()
 
     def get(self, index):
@@ -34,35 +34,37 @@ class OrderedTreeNode:
             return sorted(self.children)
         return self.children
 
-    def add(self, node=None, *args, **kwargs):
+    def add(self, node=None, **kwargs):
         if node is None:
-            node = self.__class__(*args, **kwargs)
+            node = self.__class__(**kwargs)
         self.children.append(node)
         return self.children[-1]
 
-    def set(self, index, val, *args, **kwargs):
+    def set(self, index, val, **kwargs):
         self.children[index] = val
         return self.children[index]
 
 
 class Tree:
-    def __init__(self, node_class=TreeNode, *args, **kwargs):
-        self.root = node_class(*args, **kwargs)
+    def __init__(self, root=None, node_class=TreeNode, **kwargs):
+        if root is None:
+            root = node_class(**kwargs)
+        self.root = root
+        self.node_class=node_class
+
+    def get_children(self, node, sort=False):
+        return node.get_children(sort=sort)
 
 
 def dfs(tree, action=None, pre_action=None, post_action=None, sort=False):
-    assert(action is None or pre_action is None and post_action is None)
+    assert(action is None or (pre_action is None and post_action is None))
     if action is not None and pre_action is None and post_action is None:
         pre_action = post_action = action
-    visited = set()
 
     def visit(node, depth=0):
-        if node in visited:
-            return
-        visited.add(node)
         if pre_action:
             pre_action(node, depth)
-        for n in node.get_children(sort=sort):
+        for n in tree.get_children(node, sort=sort):
             visit(n, depth+1)
             if post_action:
                 post_action(node, depth)

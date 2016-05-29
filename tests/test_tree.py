@@ -12,7 +12,7 @@ class LabeledTreeNode(LabeledNodeMixin, TreeNode):
 
 class TestTreeNode(unittest.TestCase):
     def test_add(self):
-        node = TreeNode(0)
+        node = TreeNode()
         self.assertDictEqual(node.children, {})
         node.add(1)
         self.assertEqual(len(node.children), 1)
@@ -20,7 +20,7 @@ class TestTreeNode(unittest.TestCase):
         self.assertTrue(node.children[1] is not None)
 
     def test_next(self):
-        node = TreeNode(0)
+        node = TreeNode()
         self.assertIsNone(node.get(1))
         node2 = node.add(1)
         self.assertIsNotNone(node.get(1))
