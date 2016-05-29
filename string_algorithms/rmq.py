@@ -110,9 +110,13 @@ class RMQ:
         return self._absolute_pos(b, rmq[i][j - 1])
 
     def query(self, i, j):
-        return self.array[self.query_pos(i, j)]
+        pos = self.query_pos(i, j)
+        if pos is not None:
+            return self.array[pos]
 
     def query_pos(self, i, j):
+        if i >= j:
+            return None
         bi, pi = self._get_block(i)
         bj, pj = self._get_block(j)
         m_pos = None

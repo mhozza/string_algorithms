@@ -61,3 +61,11 @@ class TestRMQ(unittest.TestCase):
             i = randint(0, len(self.array) - 2)
             j = randint(i + 1, len(self.array) - 1)
             self.assertEqual(self.rmq.query_pos(i, j), i + argmin(self.array[i:j]))
+
+    def test_query_empty(self):
+        i = randint(0, len(self.array) - 1)
+        self.assertEqual(self.rmq.query(i, i), None)
+
+    def test_query_pos_empty(self):
+        i = randint(0, len(self.array) - 1)
+        self.assertEqual(self.rmq.query_pos(i, i), None)
