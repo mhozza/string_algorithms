@@ -6,7 +6,7 @@ import unittest
 
 from string_algorithms.suffix_array import (bottom_up_lcp_interval_tree_traverse,
                                             lcp_array, naive_suffix_array,
-                                            suffix_array, top_down_lcp_interval_tree_traverse)
+                                            suffix_array, lcp_interval_tree_dfs)
 
 
 class TestNaiveSuffixArray(unittest.TestCase):
@@ -174,7 +174,7 @@ class TestTopDownLCPINtervalTreeTraversal(unittest.TestCase):
         lb = []
         rb = []
 
-        def action(node):
+        def action(node, *_):
             lcp.append(node.lcp)
             lb.append(node.lb)
             rb.append(node.rb)
@@ -182,7 +182,7 @@ class TestTopDownLCPINtervalTreeTraversal(unittest.TestCase):
         text = 'ctaataatg'
         sa = suffix_array(text)
         lcpa = lcp_array(text, sa)
-        top_down_lcp_interval_tree_traverse(lcpa, action)
+        lcp_interval_tree_dfs(lcpa, pre_action=action)
 
         correct_lcp = [0, 1, 3, 2, 1, 4]
         correct_lb = [0, 0, 0, 2, 6, 6]
@@ -197,7 +197,7 @@ class TestTopDownLCPINtervalTreeTraversal(unittest.TestCase):
         lb = []
         rb = []
 
-        def action(node):
+        def action(node, *_):
             lcp.append(node.lcp)
             lb.append(node.lb)
             rb.append(node.rb)
@@ -209,7 +209,7 @@ class TestTopDownLCPINtervalTreeTraversal(unittest.TestCase):
         text = 'ctaataatg'
         sa = suffix_array(text)
         lcpa = lcp_array(text, sa)
-        root = top_down_lcp_interval_tree_traverse(lcpa, action, keep_tree=True)
+        root = lcp_interval_tree_dfs(lcpa, pre_action=action, keep_tree=True)
 
         self.assertListEqual(lcp, correct_lcp)
         self.assertListEqual(lb, correct_lb)

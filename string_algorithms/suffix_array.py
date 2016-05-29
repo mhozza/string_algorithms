@@ -1,7 +1,7 @@
 from collections import Counter
 
 from string_algorithms.rmq import RMQ
-from string_algorithms.tree import OrderedTreeNode
+from string_algorithms.tree import OrderedTreeNode, Tree, dfs
 from string_algorithms.utils import inverse_index, inverse_index_array
 
 
@@ -166,33 +166,46 @@ def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, node
     return last_interval  # return root node
 
 
-def top_down_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, include_singletons=False,
-                                        node_class=LCPTreeNode):
-    def get_children(node):
+class LCPIntervalTree(Tree):
+    """Conceptual LCPIntervalTree"""
+    def __init__(self, rmq, root=None, node_class=LCPTreeNode, include_singletons=False, **kwargs):
+        super(LCPIntervalTree, self).__init__(root=root, node_class=node_class, **kwargs)
+        self.rmq = rmq
+        self.include_singletons = include_singletons
+
+    def get_children(self, node, sort=False):
         i, j = node.lb, node.rb
         children = []
         if i == j - 1:
             return children
         k = i
-        l = rmq.query(i + 1, j)
+        l = self.rmq.query(i + 1, j)
         while k < j:
-            m = rmq.query_pos(k + 1, j)
-            if m is None or lcp[m] != l:
+            m = self.rmq.query_pos(k + 1, j)
+            if m is None or self.rmq.array[m] != l:
                 m = j
-            if k < m - 1 or include_singletons:
-                children.append(node_class(rmq.query(k + 1, m), k, m))
+            if k < m - 1 or self.include_singletons:
+                children.append(self.node_class(self.rmq.query(k + 1, m), k, m))
             k = m
         return children
 
-    def visit(node):
-        action(node)
-        children = get_children(node)
-        if keep_tree:
-            node.children = children
-        for child in children:
-            visit(child)
+
+def lcp_interval_tree_dfs(lcp, action=None, pre_action=None, post_action=None, keep_tree=False, include_singletons=False,
+                          node_class=LCPTreeNode):
+    assert (action is None or (pre_action is None and post_action is None))
+    if action is not None and pre_action is None and post_action is None:
+        pre_action = post_action = action
 
     rmq = RMQ(lcp)
     root = node_class(0, 0, len(lcp))
-    visit(root)
+    tree = LCPIntervalTree(rmq, root, node_class=node_class, include_singletons=include_singletons)
+
+    def keep_pre_action(node, depth, parent):
+        if parent:
+            parent.add(node)
+        if pre_action:
+            pre_action(node, depth)
+
+    pa = keep_pre_action if keep_tree else pre_action
+    dfs(tree, pre_action=pa, post_action=post_action)
     return root
