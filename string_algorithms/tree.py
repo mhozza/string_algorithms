@@ -62,9 +62,12 @@ class Tree:
 
         def visit(node, depth=0, parent=None):
             if pre_action:
-                pre_action(node, depth, parent)
+                if pre_action(node, depth, parent):
+                    return
             for n in self.get_children(node, sort=sort):
                 visit(n, depth+1, node)
                 if post_action:
-                    post_action(node, depth, parent)
+                    if post_action(node, depth, parent):
+                        return
+
         visit(self.root)
