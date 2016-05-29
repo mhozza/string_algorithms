@@ -139,6 +139,9 @@ class LCPTreeNode(OrderedTreeNode):
         self.lb = lb
         self.rb = rb
 
+    def __str__(self):
+        return '{}-({},{})'.format(self.lcp, self.lb, self.rb)
+
 
 def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, node_class=LCPTreeNode):
     last_interval = None
