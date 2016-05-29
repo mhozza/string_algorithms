@@ -50,22 +50,21 @@ class Tree:
         if root is None:
             root = node_class(**kwargs)
         self.root = root
-        self.node_class=node_class
+        self.node_class = node_class
 
     def get_children(self, node, sort=False):
         return node.get_children(sort=sort)
 
+    def dfs(self, action=None, pre_action=None, post_action=None, sort=False):
+        assert(action is None or (pre_action is None and post_action is None))
+        if action is not None and pre_action is None and post_action is None:
+            pre_action = post_action = action
 
-def dfs(tree, action=None, pre_action=None, post_action=None, sort=False):
-    assert(action is None or (pre_action is None and post_action is None))
-    if action is not None and pre_action is None and post_action is None:
-        pre_action = post_action = action
-
-    def visit(node, depth=0, parent=None):
-        if pre_action:
-            pre_action(node, depth, parent)
-        for n in tree.get_children(node, sort=sort):
-            visit(n, depth+1, node)
-            if post_action:
-                post_action(node, depth, parent)
-    visit(tree.root)
+        def visit(node, depth=0, parent=None):
+            if pre_action:
+                pre_action(node, depth, parent)
+            for n in self.get_children(node, sort=sort):
+                visit(n, depth+1, node)
+                if post_action:
+                    post_action(node, depth, parent)
+        visit(self.root)

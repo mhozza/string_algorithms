@@ -1,7 +1,7 @@
 from collections import Counter
 
 from string_algorithms.rmq import RMQ
-from string_algorithms.tree import OrderedTreeNode, Tree, dfs
+from string_algorithms.tree import OrderedTreeNode, Tree
 from string_algorithms.utils import inverse_index, inverse_index_array
 
 
@@ -166,11 +166,12 @@ def bottom_up_lcp_interval_tree_traverse(lcp, action=None, keep_tree=False, node
     return last_interval  # return root node
 
 
-class LCPIntervalTree(Tree):
+class LCPConceptualIntervalTree(Tree):
     """Conceptual LCPIntervalTree"""
-    def __init__(self, rmq, root=None, node_class=LCPTreeNode, include_singletons=False, **kwargs):
-        super(LCPIntervalTree, self).__init__(root=root, node_class=node_class, **kwargs)
-        self.rmq = rmq
+    def __init__(self, lcp, node_class=LCPTreeNode, include_singletons=False, **kwargs):
+        super().__init__(root=node_class(0, 0, len(lcp)), node_class=node_class, **kwargs)
+        self.lcp = lcp
+        self.rmq = RMQ(lcp)
         self.include_singletons = include_singletons
 
     def get_children(self, node, sort=False):
@@ -190,22 +191,17 @@ class LCPIntervalTree(Tree):
         return children
 
 
-def lcp_interval_tree_dfs(lcp, action=None, pre_action=None, post_action=None, keep_tree=False, include_singletons=False,
-                          node_class=LCPTreeNode):
-    assert (action is None or (pre_action is None and post_action is None))
-    if action is not None and pre_action is None and post_action is None:
-        pre_action = post_action = action
+# class LCPIntervalTree(LCPConceptualIntervalTree):
+#     def dfs(self, action=None, pre_action=None, post_action=None):
+#         assert (action is None or (pre_action is None and post_action is None))
+#         if action is not None and pre_action is None and post_action is None:
+#             pre_action = post_action = action
+#
+#         def keep_pre_action(node, depth, parent):
+#             if parent:
+#                 parent.add(node)
+#             if pre_action:
+#                 pre_action(node, depth)
+#
+#         dfs(pre_action=keep_pre_action, post_action=post_action)
 
-    rmq = RMQ(lcp)
-    root = node_class(0, 0, len(lcp))
-    tree = LCPIntervalTree(rmq, root, node_class=node_class, include_singletons=include_singletons)
-
-    def keep_pre_action(node, depth, parent):
-        if parent:
-            parent.add(node)
-        if pre_action:
-            pre_action(node, depth)
-
-    pa = keep_pre_action if keep_tree else pre_action
-    dfs(tree, pre_action=pa, post_action=post_action)
-    return root

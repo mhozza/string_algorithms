@@ -3,7 +3,7 @@
 import unittest
 
 from string_algorithms.node_mixins import LabeledNodeMixin
-from string_algorithms.tree import dfs, Tree, TreeNode
+from string_algorithms.tree import Tree, TreeNode
 
 
 class LabeledTreeNode(LabeledNodeMixin, TreeNode):
@@ -50,7 +50,7 @@ class TestEulerTour(unittest.TestCase):
 
         correct_path = [0, 1, 2, 3, 2, 8, 2, 9, 2, 1, 6, 7, 6, 1, 0, 4, 5, 4, 0]
         correct_depth = [0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 3, 2, 1, 0, 1, 2, 1, 0]
-        dfs(tree, action, sort=True)
+        tree.dfs(action, sort=True)
         self.assertListEqual(depths, correct_depth)
         self.assertListEqual([n.label for n in path], correct_path)
 
@@ -71,6 +71,6 @@ class TestEulerTour(unittest.TestCase):
 
         correct_path = [0, 1, 2, 3, 2, 8, 2, 9, 2, 1, 6, 7, 6, 1, 0, 4, 5, 4, 0]
         correct_depth = [0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 3, 2, 1, 0, 1, 2, 1, 0]
-        dfs(tree, action)
+        tree.dfs(action)
         self.assertListEqual(depths, correct_depth)
         self.assertCountEqual([n.label for n in path], correct_path)

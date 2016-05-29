@@ -1,5 +1,4 @@
 from .rmq import RMQ
-from .tree import dfs
 
 
 class LCA:
@@ -8,7 +7,7 @@ class LCA:
         self.euler_tour = []
         self.depths = []
         self.representative = dict()
-        dfs(self.tree, self.compute_arrays_action)
+        self.tree.dfs(self.compute_arrays_action)
         self.compute_representatives()
         self.rmq = RMQ(self.depths)
 
