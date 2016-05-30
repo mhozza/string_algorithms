@@ -179,9 +179,8 @@ class LCPConceptualIntervalTree(Tree):
 
     def get_children(self, node, sort=False):
         i, j = node.lb, node.rb
-        children = []
         if i == j - 1:
-            return children
+            return
         k = i
         l = self.rmq.query(i + 1, j)
         while k < j:
@@ -189,6 +188,5 @@ class LCPConceptualIntervalTree(Tree):
             if m is None or self.rmq.array[m] != l:
                 m = j
             if k < m - 1 or self.include_singletons:
-                children.append(self.node_class(self.rmq.query(k + 1, m), k, m))
+                yield self.node_class(self.rmq.query(k + 1, m), k, m)
             k = m
-        return children
