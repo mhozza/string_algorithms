@@ -1,5 +1,7 @@
 from collections import deque
 
+from string_algorithms.suffix_array import lcp_array, LCPConceptualIntervalTree
+from string_algorithms.suffix_array import suffix_array
 from .trie import Trie, TrieNode
 
 
@@ -90,7 +92,15 @@ def aho_corrasick(patterns, text):
     return results
 
 
-def suffix_array_match(pattern, text, sa, lcptree, sort=False):
+def sa_preprocess(text):
+    sa = suffix_array(text)
+    lcp = lcp_array(text, sa)
+    lcptree = LCPConceptualIntervalTree(lcp, include_singletons=True)
+    return text, sa, lcptree
+
+
+def suffix_array_match(pattern, sa_preprocessed_text, sort=False):
+    text, sa, lcptree = sa_preprocessed_text
     current_pos = 0
     interval = None
 
@@ -112,10 +122,7 @@ def suffix_array_match(pattern, text, sa, lcptree, sort=False):
             interval = node
             return True
 
-    singletons_enabled = lcptree.include_singletons
-    lcptree.include_singletons = True
     lcptree.dfs(pre_action=pre_action)
-    lcptree.include_singletons = singletons_enabled
     if interval is None:
         return []
     positions = [sa[i] for i in range(interval.lb, interval.rb)]

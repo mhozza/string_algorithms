@@ -6,7 +6,7 @@ from string_algorithms.exact_string_matching import (aho_corrasick,
                                                      aho_corrasick_preprocess,
                                                      kmp, kmp_preprocess,
                                                      naive_find,
-                                                     suffix_array_match)
+                                                     suffix_array_match, sa_preprocess)
 from string_algorithms.suffix_array import suffix_array, lcp_array, LCPConceptualIntervalTree
 
 
@@ -111,23 +111,17 @@ class TestAhoCorrasick(unittest.TestCase):
 class TestSAMatch(unittest.TestCase):
     def test_not_find(self):
         text = 'tatatattgcgccatattagagattagatagga'
-        sa = suffix_array(text)
-        lcp = lcp_array(text, sa)
-        lcptree = LCPConceptualIntervalTree(lcp)
-        self.assertListEqual(suffix_array_match('alt', text, sa, lcptree), [])
+        t = sa_preprocess(text)
+        self.assertListEqual(suffix_array_match('alt', t), [])
 
     def test_small(self):
         patterns = ('at', 'gag', 'gc', 'gata')
         text = 'tatatattgcgccatattagagattagatagga'
-        sa = suffix_array(text)
-        lcp = lcp_array(text, sa)
-        lcptree = LCPConceptualIntervalTree(lcp)
+        t = sa_preprocess(text)
         for pattern in patterns:
-            self.assertListEqual(suffix_array_match(pattern, text, sa, lcptree, sort=True), naive_find(pattern, text))
+            self.assertListEqual(suffix_array_match(pattern, t, sort=True), naive_find(pattern, text))
 
     def test_small2(self):
         text = 'ctaataatg'
-        sa = suffix_array(text)
-        lcp = lcp_array(text, sa)
-        lcptree = LCPConceptualIntervalTree(lcp)
-        self.assertListEqual(suffix_array_match('taa', text, sa, lcptree, sort=True), naive_find('taa', text))
+        t = sa_preprocess(text)
+        self.assertListEqual(suffix_array_match('taa', t, sort=True), naive_find('taa', text))
